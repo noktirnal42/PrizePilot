@@ -33,7 +33,7 @@ See [ARCHITECTURE.md](/Users/jeremymcvay/dev/PrizePilot/ARCHITECTURE.md) and [do
 - Frontend: Vite + React.
 - Backend: Python FastAPI.
 - Agent framework: Google GenAI SDK (`google-genai`).
-- Model: `gemini-3.5-flash` or newer through Gemini API.
+- Model: `gemini-3.5-flash` or newer through Vertex AI or Gemini API.
 - Cloud infrastructure: Cloud Run and Firestore.
 - Local demo storage: JSON fixtures.
 - Tests: pytest.
@@ -46,7 +46,7 @@ See [ARCHITECTURE.md](/Users/jeremymcvay/dev/PrizePilot/ARCHITECTURE.md) and [do
 
 ## Gemini / Agent Framework Usage
 
-`backend/prizepilot/agent.py` wraps the Google GenAI SDK. If `GEMINI_API_KEY` is set, structured rules extraction can call Gemini. If credentials are missing, PrizePilot uses deterministic local fallback behavior so judges can run the demo without paid services.
+`backend/prizepilot/agent.py` wraps the Google GenAI SDK. On Cloud Run, `USE_VERTEX_AI=true` uses Vertex AI with the Cloud Run service account. Locally, `GEMINI_API_KEY` can use the Gemini Developer API. If credentials are missing, PrizePilot uses deterministic local fallback behavior so judges can run the demo without paid services.
 
 ## Local Setup
 
@@ -118,18 +118,17 @@ CONFIRM_DEPLOY=YES PROJECT_ID=your-project-id ./scripts/deploy-cloud-run.sh
 Manual commands:
 
 ```bash
-gcloud services enable run.googleapis.com artifactregistry.googleapis.com firestore.googleapis.com
+gcloud services enable run.googleapis.com artifactregistry.googleapis.com firestore.googleapis.com aiplatform.googleapis.com
 gcloud artifacts repositories create prizepilot --repository-format=docker --location=us-central1
 gcloud builds submit --tag us-central1-docker.pkg.dev/PROJECT_ID/prizepilot/api:latest
 gcloud run deploy prizepilot-api \
   --image us-central1-docker.pkg.dev/PROJECT_ID/prizepilot/api:latest \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-env-vars USE_FIRESTORE=true,GOOGLE_CLOUD_PROJECT=PROJECT_ID,GEMINI_MODEL=gemini-3.5-flash \
-  --set-secrets GEMINI_API_KEY=GEMINI_API_KEY:latest
+  --set-env-vars USE_FIRESTORE=true,USE_VERTEX_AI=true,GOOGLE_CLOUD_PROJECT=PROJECT_ID,GOOGLE_CLOUD_LOCATION=us-central1,GEMINI_MODEL=gemini-3.5-flash
 ```
 
-Replace `PROJECT_ID` and configure Secret Manager before using `--set-secrets`. Deployment is optional unless credentials are available.
+Replace `PROJECT_ID`. Deployment is optional unless credentials are available.
 
 If `gcloud` is missing on macOS:
 

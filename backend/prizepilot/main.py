@@ -48,6 +48,7 @@ def health():
         "storage_mode": store.mode,
         "google_cloud_services": ["Cloud Run", "Firestore"],
         "gemini_model": agent.model,
+        "vertex_ai": agent.use_vertex_ai,
     }
 
 

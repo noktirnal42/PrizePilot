@@ -20,7 +20,7 @@ REPOSITORY="${REPOSITORY:-prizepilot}"
 IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/api:latest"
 
 gcloud config set project "${PROJECT_ID}"
-gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com firestore.googleapis.com
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com firestore.googleapis.com aiplatform.googleapis.com
 
 if ! gcloud artifacts repositories describe "${REPOSITORY}" --location="${REGION}" >/dev/null 2>&1; then
   gcloud artifacts repositories create "${REPOSITORY}" \
@@ -35,8 +35,8 @@ gcloud run deploy "${SERVICE}" \
   --image "${IMAGE}" \
   --region "${REGION}" \
   --allow-unauthenticated \
-  --set-env-vars "USE_FIRESTORE=true,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.5-flash}"
+  --set-env-vars "USE_FIRESTORE=true,USE_VERTEX_AI=true,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=${REGION},GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.5-flash}"
 
 echo
 echo "Deployment complete. Open the Cloud Run service URL printed above."
-echo "If you want live Gemini calls, add GEMINI_API_KEY through Secret Manager and redeploy with --set-secrets."
+echo "Gemini is configured through Vertex AI using the Cloud Run service account."

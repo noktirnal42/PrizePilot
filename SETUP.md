@@ -37,12 +37,14 @@ Then open `http://127.0.0.1:8080`.
 
 ## Gemini
 
-Local demo works without credentials. To use Gemini:
+Local demo works without credentials. To use the Gemini Developer API locally:
 
 ```bash
 export GEMINI_API_KEY="your-key"
 export GEMINI_MODEL="gemini-3.5-flash"
 ```
+
+On Cloud Run, the deploy script sets `USE_VERTEX_AI=true` and uses Vertex AI with the service account.
 
 ## Firestore
 
