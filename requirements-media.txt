@@ -1,0 +1,7 @@
+edge-tts==7.2.8
+moviepy==2.2.1
+imageio-ffmpeg==0.6.0
+pillow==11.3.0
+numpy==2.5.2
+playwright==1.62.0
+
