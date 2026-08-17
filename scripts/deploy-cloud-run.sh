@@ -35,7 +35,7 @@ gcloud run deploy "${SERVICE}" \
   --image "${IMAGE}" \
   --region "${REGION}" \
   --allow-unauthenticated \
-  --set-env-vars "USE_FIRESTORE=true,USE_VERTEX_AI=true,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=${REGION},GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.5-flash}"
+  --set-env-vars "USE_FIRESTORE=true,USE_VERTEX_AI=true,GOOGLE_GENAI_USE_ENTERPRISE=true,GOOGLE_CLOUD_PROJECT=${PROJECT_ID},GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-global},GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.5-flash}"
 
 echo
 echo "Deployment complete. Open the Cloud Run service URL printed above."

@@ -52,6 +52,7 @@ class AgentOrchestrator:
             if getattr(response, "parsed", None):
                 return response.parsed
             return schema.model_validate(json.loads(response.text))
-        except Exception:
-            self.last_error = "Gemini generation failed; returned deterministic local fallback."
+        except Exception as exc:
+            detail = str(exc).replace("\n", " ")[:220]
+            self.last_error = f"Gemini generation failed ({exc.__class__.__name__}: {detail}); returned deterministic local fallback."
             return fallback

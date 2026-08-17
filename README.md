@@ -125,7 +125,7 @@ gcloud run deploy prizepilot-api \
   --image us-central1-docker.pkg.dev/PROJECT_ID/prizepilot/api:latest \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-env-vars USE_FIRESTORE=true,USE_VERTEX_AI=true,GOOGLE_CLOUD_PROJECT=PROJECT_ID,GOOGLE_CLOUD_LOCATION=us-central1,GEMINI_MODEL=gemini-3.5-flash
+  --set-env-vars USE_FIRESTORE=true,USE_VERTEX_AI=true,GOOGLE_GENAI_USE_ENTERPRISE=true,GOOGLE_CLOUD_PROJECT=PROJECT_ID,GOOGLE_CLOUD_LOCATION=global,GEMINI_MODEL=gemini-3.5-flash
 ```
 
 Replace `PROJECT_ID`. Deployment is optional unless credentials are available.
