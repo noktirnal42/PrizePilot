@@ -1,0 +1,2 @@
+"""PrizePilot backend package."""
+
