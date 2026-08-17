@@ -37,7 +37,10 @@ agent = AgentOrchestrator()
 
 
 def envelope(data, warnings: list[str] | None = None) -> ApiEnvelope:
-    return ApiEnvelope(data=data, warnings=warnings or [], agent_mode=agent.mode)
+    merged_warnings = list(warnings or [])
+    if agent.last_error:
+        merged_warnings.append(agent.last_error)
+    return ApiEnvelope(data=data, warnings=merged_warnings, agent_mode=agent.mode)
 
 
 @app.get("/health")

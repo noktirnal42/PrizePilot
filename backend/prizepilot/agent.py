@@ -19,6 +19,7 @@ class AgentOrchestrator:
         self.project = os.getenv("GOOGLE_CLOUD_PROJECT")
         self.location = os.getenv("GOOGLE_CLOUD_LOCATION", os.getenv("REGION", "us-central1"))
         self._client = None
+        self.last_error: str | None = None
         try:
             from google import genai
 
@@ -36,6 +37,7 @@ class AgentOrchestrator:
         return "gemini-genai-sdk-vertex-ai" if self.use_vertex_ai else "gemini-genai-sdk-api-key"
 
     def structured_generate(self, prompt: str, schema: Type[T], fallback: T) -> T:
+        self.last_error = None
         if not self._client:
             return fallback
         try:
@@ -51,4 +53,5 @@ class AgentOrchestrator:
                 return response.parsed
             return schema.model_validate(json.loads(response.text))
         except Exception:
+            self.last_error = "Gemini generation failed; returned deterministic local fallback."
             return fallback
