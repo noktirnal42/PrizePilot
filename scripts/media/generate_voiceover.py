@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 import asyncio
+import re
+import subprocess
 from pathlib import Path
 
 import edge_tts
+import imageio_ffmpeg
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "artifacts" / "demo-video"
@@ -55,23 +58,83 @@ PrizePilot is a complete workflow agent for the Taskmaster track: it takes a mes
 The human stays in control. PrizePilot prepares the work. The user reviews, approves, and submits manually outside the app."""
 
 
+def chunks(text: str) -> list[str]:
+    paragraphs = [part.strip() for part in text.split("\n\n") if part.strip()]
+    output: list[str] = []
+    for paragraph in paragraphs:
+        sentences = re.split(r"(?<=[.!?])\s+", paragraph)
+        current = ""
+        for sentence in sentences:
+            candidate = f"{current} {sentence}".strip()
+            if len(candidate) <= 260:
+                current = candidate
+            else:
+                if current:
+                    output.append(current)
+                current = sentence
+        if current:
+            output.append(current)
+    return output
+
+
+async def synthesize_chunk(text: str, path: Path, voice: str) -> None:
+    last_error: Exception | None = None
+    for attempt in range(1, 4):
+        if path.exists():
+            path.unlink()
+        try:
+            communicate = edge_tts.Communicate(
+                text,
+                voice=voice,
+                rate="+6%",
+                volume="+0%",
+                pitch="+0Hz",
+            )
+            await communicate.save(str(path))
+            if path.exists() and path.stat().st_size > 0:
+                return
+        except Exception as exc:
+            last_error = exc
+            await asyncio.sleep(1.5 * attempt)
+    raise RuntimeError(f"Edge TTS failed for chunk: {text[:80]!r}") from last_error
+
+
 async def main() -> None:
     script_path = OUT / "voiceover-script.txt"
     audio_path = OUT / "voiceover.mp3"
     script_path.write_text(SCRIPT + "\n")
 
-    voice = "en-US-AvaMultilingualNeural"
-    communicate = edge_tts.Communicate(
-        SCRIPT,
-        voice=voice,
-        rate="+4%",
-        volume="+0%",
-        pitch="+0Hz",
+    voice = "en-US-JennyNeural"
+    chunk_paths: list[Path] = []
+    for stale in OUT.glob("voiceover-chunk-*.mp3"):
+        stale.unlink()
+    for index, chunk in enumerate(chunks(SCRIPT), start=1):
+        chunk_path = OUT / f"voiceover-chunk-{index:02d}.mp3"
+        await synthesize_chunk(chunk, chunk_path, voice)
+        chunk_paths.append(chunk_path)
+
+    concat_file = OUT / "voiceover-concat.txt"
+    concat_file.write_text("".join(f"file '{path.name}'\n" for path in chunk_paths))
+    ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
+    subprocess.run(
+        [
+            ffmpeg,
+            "-y",
+            "-f",
+            "concat",
+            "-safe",
+            "0",
+            "-i",
+            str(concat_file),
+            "-c",
+            "copy",
+            str(audio_path),
+        ],
+        cwd=OUT,
+        check=True,
     )
-    await communicate.save(str(audio_path))
     print(audio_path)
 
 
 if __name__ == "__main__":
     asyncio.run(main())
-
