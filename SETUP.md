@@ -24,6 +24,17 @@ Open `http://127.0.0.1:5173`.
 PYTHONPATH=backend pytest
 ```
 
+## One-Service Container
+
+The Dockerfile builds the React frontend and serves it from FastAPI. This lets Cloud Run host both the website and API from one service:
+
+```bash
+docker build -t prizepilot .
+docker run --rm -p 8080:8080 prizepilot
+```
+
+Then open `http://127.0.0.1:8080`.
+
 ## Gemini
 
 Local demo works without credentials. To use Gemini:
@@ -45,3 +56,12 @@ export FIRESTORE_COLLECTION="opportunities"
 
 Authenticate with `gcloud auth application-default login` or run on Cloud Run with a service account that has Firestore permissions.
 
+## Cloud Run
+
+Use the guarded deploy script after you install and authenticate Google Cloud CLI:
+
+```bash
+CONFIRM_DEPLOY=YES PROJECT_ID=your-project-id ./scripts/deploy-cloud-run.sh
+```
+
+The script refuses to run unless `CONFIRM_DEPLOY=YES` is present.

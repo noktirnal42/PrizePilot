@@ -105,6 +105,16 @@ Copy `.env.example` to `.env` for local use. Important variables:
 
 ## Cloud Run Deployment
 
+PrizePilot can deploy as one Cloud Run service that serves both the React website and FastAPI API.
+
+Guarded script:
+
+```bash
+CONFIRM_DEPLOY=YES PROJECT_ID=your-project-id ./scripts/deploy-cloud-run.sh
+```
+
+Manual commands:
+
 ```bash
 gcloud services enable run.googleapis.com artifactregistry.googleapis.com firestore.googleapis.com
 gcloud artifacts repositories create prizepilot --repository-format=docker --location=us-central1
@@ -118,6 +128,13 @@ gcloud run deploy prizepilot-api \
 ```
 
 Replace `PROJECT_ID` and configure Secret Manager before using `--set-secrets`. Deployment is optional unless credentials are available.
+
+If `gcloud` is missing on macOS:
+
+```bash
+brew install --cask google-cloud-sdk
+gcloud init
+```
 
 ## Demo Flow
 

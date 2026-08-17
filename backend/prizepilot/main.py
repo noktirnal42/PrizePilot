@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from .agent import AgentOrchestrator
 from .compliance import scan_text
@@ -19,6 +20,8 @@ from .scoring import score_opportunity
 from .statuses import STATUSES, validate_transition
 from .storage import OpportunityStore
 from .win_plan import generate_win_plan
+
+from pathlib import Path
 
 app = FastAPI(title="PrizePilot API", version="0.1.0")
 app.add_middleware(
@@ -145,3 +148,7 @@ def drafts(payload: DraftRequest):
 def compliance_scan(payload: TextPayload):
     return envelope(scan_text(payload.text))
 
+
+DIST_DIR = Path(__file__).resolve().parents[2] / "dist"
+if DIST_DIR.exists():
+    app.mount("/", StaticFiles(directory=DIST_DIR, html=True), name="web")
