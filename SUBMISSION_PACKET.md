@@ -15,7 +15,7 @@ All Things Agentic Hackathon: Taskmaster
 ## What To Submit Manually
 
 - Public code repository URL.
-- Working app URL if deployed to Cloud Run.
+- Working app URL if deployed to Cloud Run: `https://prizepilot-zav4ngm6ua-uc.a.run.app`.
 - Demo video link.
 - README with setup and Cloud Run instructions.
 - Architecture diagram.
@@ -36,4 +36,3 @@ All Things Agentic Hackathon: Taskmaster
 - Compliance scan is Safe or manually accepted as Needs Review.
 - No fake credentials, nonprofit claims, endorsements, or citations.
 - User submits manually outside PrizePilot.
-

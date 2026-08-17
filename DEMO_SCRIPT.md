@@ -30,5 +30,4 @@ Return to the dashboard. Show ranked opportunities, statuses, deadlines, prize v
 
 ## 3:40 - Google Cloud Proof
 
-Show `/health` returning the Gemini model, agent mode, storage mode, and Google Cloud services. Then show Cloud Run deployment commands from the README and explain Firestore can be enabled with `USE_FIRESTORE=true`.
-
+Show `https://prizepilot-zav4ngm6ua-uc.a.run.app/health` returning the Gemini model, `gemini-genai-sdk-vertex-ai`, Firestore storage mode, and Google Cloud services. Then show Cloud Run logs for recent requests.
