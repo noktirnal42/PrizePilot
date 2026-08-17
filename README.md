@@ -76,6 +76,8 @@ npm run dev
 
 Open `http://127.0.0.1:5173`.
 
+The Vite dev server proxies `/api` and `/health` to the local FastAPI backend.
+
 ## Firestore Setup
 
 ```bash

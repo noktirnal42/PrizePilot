@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import "./styles.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8080";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
 
 async function api(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
@@ -379,4 +379,3 @@ function App() {
 }
 
 createRoot(document.getElementById("root")).render(<App />);
-
