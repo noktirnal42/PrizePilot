@@ -50,6 +50,16 @@ See [ARCHITECTURE.md](/Users/jeremymcvay/dev/PrizePilot/ARCHITECTURE.md) and [do
 
 ## Local Setup
 
+Fast path:
+
+```bash
+./scripts/start-local.sh
+```
+
+Then open `http://127.0.0.1:5173`.
+
+Manual backend:
+
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
@@ -150,4 +160,3 @@ Any final submission, account creation, terms acceptance, fee payment, tax docum
 - Demo script included.
 - Compliance policy included.
 - User manually submits the hackathon entry outside PrizePilot.
-
